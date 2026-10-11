@@ -21,7 +21,11 @@ const niceStep = A.niceStep = (range, target) => {
 const decs = A.decs = step => Math.max(0, -Math.floor(Math.log10(step) + 1e-9));
 A.num = s => { const n = Number(String(s).trim().replace(/\s/g, '').replace(',', '.')); return Number.isFinite(n) ? n : NaN; };
 A.clamp = (x, a, b) => Math.min(b, Math.max(a, x));
-A.greek = root => (root || document).querySelectorAll('label.l').forEach(l => { if (!l.dataset.gk) { l.dataset.gk = 1; l.innerHTML = l.innerHTML.replace(/([α-ω])(?![^<]*>)/g, '<span class="gk">$1</span>'); } });
+A.greek = root => (root || document).querySelectorAll('label.l').forEach(l => {
+  if (l.dataset.gk) return; l.dataset.gk = 1;
+  const w = document.createTreeWalker(l, NodeFilter.SHOW_TEXT), nodes = []; while (w.nextNode()) if (/[α-ω]/.test(w.currentNode.nodeValue)) nodes.push(w.currentNode);
+  nodes.forEach(n => { const f = document.createDocumentFragment(); n.nodeValue.split(/([α-ω])/).forEach(p => { if (!p) return; if (/^[α-ω]$/.test(p)) { const s = document.createElement('span'); s.className = 'gk'; s.textContent = p; f.appendChild(s); } else f.appendChild(document.createTextNode(p)); }); n.replaceWith(f); });
+});
 A.stats = items => items.map(([k, v]) => `<div class="st"><dt>${k}</dt><dd>${v}</dd></div>`).join('');
 
 /* ---------- Lienzos ---------- */
@@ -231,9 +235,19 @@ S.zInv = p => S.inv(z => S.normCdf(z), p, -40, 40);
 A.seg = (id, opts, cur) => `<div class="seg" id="${id}">${opts.map(([v, l]) => `<button data-v="${v}" aria-pressed="${v === cur}">${l}</button>`).join('')}</div>`;
 A.segBind = (id, cb) => A.$$(`#${id} button`).forEach(b => b.onclick = () => { A.$$(`#${id} button`).forEach(x => x.setAttribute('aria-pressed', x === b)); cb(b.dataset.v); });
 // defs: [clave, etiqueta, min, max, paso, valor, decimales]
-A.sliders = (pre, defs) => defs.map(([k, l, mn, mx, st, v, d = 2]) => `<div><label class="l" for="${pre}-${k}">${l} = <span id="${pre}-${k}-v" style="color:var(--fg)">${fmt(v, d)}</span></label><input type="range" id="${pre}-${k}" min="${mn}" max="${mx}" step="${st}" value="${v}"></div>`).join('');
-A.bindSliders = (pre, defs, st, cb) => defs.forEach(([k, , , , , v, d = 2]) => { st[k] = v; const el = A.$(`#${pre}-${k}`); el.oninput = () => { st[k] = +el.value; A.$(`#${pre}-${k}-v`).textContent = fmt(st[k], d); cb(k); }; });
-A.setSlider = (pre, k, v, st, d = 2) => { st[k] = v; const el = A.$(`#${pre}-${k}`); if (el) { el.value = v; A.$(`#${pre}-${k}-v`).textContent = fmt(v, d); } };
+A.sliders = (pre, defs) => defs.map(([k, l, mn, mx, st, v, d = 2]) => `<div><label class="l" for="${pre}-${k}">${l} = <input class="sv" id="${pre}-${k}-v" value="${fmt(v, d)}" inputmode="decimal" autocomplete="off" spellcheck="false" title="Tocá para escribir un valor exacto" aria-label="Valor exacto"></label><input type="range" id="${pre}-${k}" min="${mn}" max="${mx}" step="${st}" value="${v}"></div>`).join('');
+const showV = (el, txt) => { if (!el) return; if (el.tagName === 'INPUT') { if (document.activeElement !== el) el.value = txt; } else el.textContent = txt; };
+A.bindSliders = (pre, defs, st, cb) => defs.forEach(([k, , , , , v, d = 2]) => {
+  st[k] = v; const el = A.$(`#${pre}-${k}`), ev = A.$(`#${pre}-${k}-v`);
+  el.oninput = () => { st[k] = +el.value; showV(ev, fmt(st[k], d)); cb(k); };
+  if (ev && ev.tagName === 'INPUT') {
+    const take = fin => { const x = A.num(ev.value); if (!Number.isFinite(x)) { if (fin) ev.value = fmt(st[k], d); return; } if (x < +el.min) el.min = x; if (x > +el.max) el.max = x; el.value = x; st[k] = x; cb(k); if (fin) ev.value = fmt(x, Math.max(d, Math.min(6, (String(ev.value).split(/[.,]/)[1] || '').length))); };
+    ev.oninput = () => take(false); ev.onchange = () => take(true);
+    ev.onkeydown = e => { if (e.key === 'Enter') { ev.blur(); } };
+    ev.onclick = e => { e.preventDefault(); ev.select(); };
+  }
+});
+A.setSlider = (pre, k, v, st, d = 2) => { st[k] = v; const el = A.$(`#${pre}-${k}`); if (el) { if (v < +el.min) el.min = v; if (v > +el.max) el.max = v; el.value = v; showV(A.$(`#${pre}-${k}-v`), fmt(v, d)); } };
 // Gráfico económico con ejes desde cero y utilidades de dibujo
 A.ax = (cv, xr, yr, o = {}) => {
   const { c, w, h } = canv(cv); if (w < 2) return null;

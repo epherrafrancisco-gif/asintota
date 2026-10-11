@@ -137,6 +137,19 @@ select.field{font-family:var(--f-body)}
 .seg button{background:none;border:0;padding:6px 11px;font-size:13px;color:var(--muted);cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--panel-2);color:var(--fg)}
 input[type=range]{width:100%;accent-color:var(--amber)}
+.drill{margin-top:28px;border:1px solid var(--line);border-left:3px solid var(--amber);border-radius:10px;background:var(--panel);padding:20px;display:flex;flex-direction:column;gap:14px}
+.drill-h{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}.drill-h h3{margin:4px 0 0}
+.drill-q{font-size:15px;line-height:1.6;max-width:75ch}
+.drill-f{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.drill-in{display:flex;flex-direction:column;gap:6px;position:relative;font:12px var(--f-mono);color:var(--muted)}
+.drill-in i{position:absolute;right:10px;bottom:8px;font-style:normal;font-weight:700}
+.drill-in.good input{border-color:var(--teal)}.drill-in.good i{color:var(--teal)}
+.drill-in.bad input{border-color:var(--rose)}.drill-in.bad i{color:var(--rose)}
+.drill-good{color:var(--teal)}.drill-bad{color:var(--rose)}
+.drill-tag{display:inline-block;margin-top:8px;margin-left:6px;font:11px var(--f-mono);color:var(--teal);border:1px solid var(--teal-soft);border-radius:999px;padding:2px 8px}
+.sv{font:inherit;font-family:var(--f-mono);color:var(--fg);background:transparent;border:0;border-bottom:1px dashed var(--faint);width:9ch;padding:0 2px;margin-left:2px;text-transform:none;letter-spacing:0;border-radius:0}
+.sv:hover{border-bottom-color:var(--amber)}.sv:focus{outline:none;border-bottom:1px solid var(--amber);background:var(--panel-2)}
+
 .l .gk{text-transform:none}
 .err{color:var(--rose);font:12px var(--f-mono);min-height:0}
 .note{font-size:13px;color:var(--muted)}
@@ -326,3 +339,4 @@ table.tbl{border-collapse:collapse;width:100%;font:13px var(--f-mono);font-varia
 <script src="js/juegos.js"></script>
 <script src="js/visual.js"></script>
 <script src="js/main.js"></script>
+<script src="js/practica.js"></script>
