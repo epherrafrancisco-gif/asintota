@@ -1,0 +1,35 @@
+
+<header class="head">
+  <div class="bar">
+    <button class="brand" data-go="inicio" aria-label="Asíntota, inicio">
+      <svg viewBox="0 0 26 26" fill="none" aria-hidden="true"><path d="M3 2v21h21" stroke="#565b6f" stroke-width="1.6"/><path d="M6 3c1 9 4 14.5 17 16.5" stroke="#f2a93b" stroke-width="2.2" stroke-linecap="round"/></svg>
+      <span>Asíntota</span>
+    </button>
+    <button class="search" id="search-btn" aria-label="Buscar un tema"><span>Buscar un tema…</span><kbd>Ctrl K</kbd></button>
+  </div>
+  <nav class="tabs mats-nav" id="mats-nav" aria-label="Materias"></nav>
+  <div class="topics-nav" id="topics-wrap" hidden><nav class="tabs" id="topics-nav" aria-label="Temas de la materia"></nav></div>
+</header>
+
+<main>
+  <section id="v-inicio" data-view>
+    <div class="hero">
+      <p class="eyebrow">Herramientas interactivas para la facultad</p>
+      <h1 style="margin-top:12px">Elegí una materia y empezá a practicar.</h1>
+      <p class="lead">Cada tema tiene una herramienta donde movés los números y ves el modelo responder, con las cuentas paso a paso y explicado en criollo.</p>
+      <div class="hero-cta"><button class="btn primary" data-go="mat-micro">Empezar por Microeconomía</button><button class="btn" id="hero-search">Buscar un tema</button></div>
+      <div class="hero-stats" id="h-stats"></div>
+    </div>
+    <div id="areas"></div>
+  </section>
+  <div id="matviews"></div>
+  <div id="tools"></div>
+  <footer class="foot"><span>Asíntota</span><span>Hecho por Francisco Epherra</span></footer>
+</main>
+
+<div class="pal" id="pal" hidden role="dialog" aria-label="Buscar">
+  <div class="pal-box">
+    <div class="pal-in"><input id="pal-q" placeholder="Escribí un tema: elasticidad, IS-LM, bonos, Lagrange…" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div>
+    <div class="pal-list" id="pal-list" role="listbox"></div>
+  </div>
+</div>
